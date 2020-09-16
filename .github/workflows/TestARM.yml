@@ -1,1 +1,35 @@
 
+#Workflow to deploy logic apps to Azure using ARM templates
+
+name: Deploy ARM Template
+
+#Trigger on push to master branch, workflow is triggered when commits made at configured path
+on:
+ push: 
+  branches:
+      - master
+  paths:
+      - ".github/workflows/DeployARMTemplate_AzureCLI.yml"
+
+#Job named deploy-arm-template containing steps/actions.
+jobs:
+    deploy-arm-template: 
+      runs-on: ubuntu-latest
+      steps:
+        # Step 1 - Checkout out a template file - Using “Checkout” action to check out repository so the workflow can access any specified Resource Manager template.
+        - name: Checkout source code
+          uses: actions/checkout@master
+
+        # Step 2 - Sign-in to Azure - Using “Azure Login" action to log in with Azure credentials
+        - name: Login to Azure
+          uses: azure/login@v1
+          with:
+            creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+        - name: Azure PowerShell Action
+          uses: Azure/powershell@v1
+          with:
+           # Specify the Az PowerShell script here.
+            inlineScript: |
+              Import-Module .\arm-ttk.psd1
+              Test-AzTemplate -TemplatePath \template\basicLogicApp.json
