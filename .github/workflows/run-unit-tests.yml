@@ -2,8 +2,8 @@
 name: RunPester
 on: 
 - workflow_dispatch
-- pull_request
-- push
+#- pull_request
+#- push
 jobs: 
   TestPowerShellOnLinux: 
     runs-on: ubuntu-latest
